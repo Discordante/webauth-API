@@ -9,6 +9,9 @@ const crypto        = require('crypto');
 const x509          = require('@fidm/x509');
 const iso_3166_1    = require('iso-3166-1');
 
+const defaultroutes = require('./config/routes.config');
+const webuathnauth  = require('./config/routes.config');
+
 const app = express();
 
 /* Middlewares */
@@ -31,9 +34,17 @@ app.use(cookieSession({
 
 app.use(cookieParser())
 
+/* ----- serve static ----- */
+app.use(express.static(path.join(__dirname, 'static')));
+
+app.use('/', defaultroutes)
+app.use('/webauthn', webuathnauth)
+
 
 const port = process.env.PORT || 3000
 
 app.listen(port, () => {
     console.log(`Ready! Listen on port ${port}`);
 })
+
+module.exports = app;
